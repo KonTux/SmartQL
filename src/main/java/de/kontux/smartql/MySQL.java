@@ -35,7 +35,7 @@ public class MySQL {
         }
     }
 
-    public void update(ResultLessStatement command) {
+    public void update(ResultLessStatement command, Runnable onFinish) {
         if (connection == null) {
             return;
         }
@@ -45,10 +45,18 @@ public class MySQL {
                 PreparedStatement statement = connection.prepareStatement(command.constructStatement());
                 statement.execute();
                 statement.close();
+
+                if (onFinish != null) {
+                    onFinish.run();
+                }
             } catch (SQLException e) {
                 throw new QueryException("Failed to run update statement: " + e.getMessage(), e);
             }
         });
+    }
+
+    public void update(ResultLessStatement command) {
+        update(command, null);
     }
 
     public void query(ResultedStatement command, Consumer<QueryResult> callback) {
