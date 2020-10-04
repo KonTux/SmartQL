@@ -21,6 +21,10 @@ public class MySQL {
         threadPool = Executors.newFixedThreadPool(threads);
     }
 
+    public void connect(DatabaseCredentials credentials, Runnable whenDone) {
+        connect(credentials.getHost(), credentials.getDatabase(), credentials.getUserName(), credentials.getPassword(), credentials.getPort(), whenDone);
+    }
+
     public synchronized void connect(String host, String database, String user, String password, int port, Runnable whenDone) {
         try {
             this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
