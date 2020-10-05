@@ -15,7 +15,7 @@ public class DatabaseCredentials {
         Objects.requireNonNull(this.host = host, "Host may not be null!");
         Objects.requireNonNull(this.database = database, "Database name may not be null!");
         Objects.requireNonNull(this.userName = userName, "User name may not be null!");
-        this.password = password;
+        this.password = password == null ? "" : password;
         this.port = port == 0 ? 3306 : port;
     }
 
