@@ -1,5 +1,8 @@
 package de.kontux.smartql;
 
+import java.util.Objects;
+import java.util.Properties;
+
 public class DatabaseCredentials {
 
     private final String host;
@@ -9,11 +12,11 @@ public class DatabaseCredentials {
     private final int port;
 
     public DatabaseCredentials(String host, String database, String userName, String password, int port) {
-        this.host = host;
-        this.database = database;
-        this.userName = userName;
-        this.password = password;
-        this.port = port;
+        Objects.requireNonNull(this.host = host, "Host may not be null!");
+        Objects.requireNonNull(this.database = database, "Database name may not be null!");
+        Objects.requireNonNull(this.userName = userName, "User name may not be null!");
+        Objects.requireNonNull(this.password = password, "Password may not be null!");
+        this.port = port == 0 ? 3306 : port;
     }
 
     public String getHost() {
@@ -34,5 +37,19 @@ public class DatabaseCredentials {
 
     public int getPort() {
         return port;
+    }
+
+    public static DatabaseCredentials fromProperties(Properties properties) {
+        String host = properties.getProperty("host");
+        String database = properties.getProperty("database");
+        String userName = properties.getProperty("username");
+        String password = properties.getProperty("password");
+        int port = Integer.parseInt(properties.getProperty("port"));
+
+        try {
+            return new DatabaseCredentials(host, database, userName, password, port);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Invalid properties!", e);
+        }
     }
 }
